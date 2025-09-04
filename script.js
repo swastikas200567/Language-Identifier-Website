@@ -7,11 +7,14 @@ async function detectLanguage() {
     }
 
     try {
-        // Call LibreTranslate API
-        const response = await fetch("https://libretranslate.de/detect", {
+        // Use LibreTranslate free API
+        const response = await fetch("https://libretranslate.com/detect", {
             method: "POST",
             body: JSON.stringify({ q: text }),
-            headers: { "Content-Type": "application/json" }
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
         });
 
         const data = await response.json();
@@ -36,6 +39,7 @@ async function detectLanguage() {
             `Detected Language: <b>${detectedLanguage}</b>`;
     } catch (error) {
         document.getElementById("result").innerHTML =
-            "Error detecting language. Please try again.";
+            "⚠️ Error detecting language. Try again later.";
+        console.error(error);
     }
 }
