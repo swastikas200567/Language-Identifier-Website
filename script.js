@@ -1,22 +1,41 @@
-function detectLanguage() {
-  let text = document.getElementById("textInput").value;
-  let result = document.getElementById("result");
+async function detectLanguage() {
+    const text = document.getElementById("inputText").value;
 
-  if (text.length === 0) {
-    result.innerText = "❌ Please enter some text!";
-    return;
-  }
+    if (!text) {
+        alert("Please enter some text!");
+        return;
+    }
 
-  // Simple rule-based language detection (just for demo)
-  if (/[अ-ह]/.test(text)) {
-    result.innerText = "Detected Language: Hindi 🇮🇳";
-  } else if (/[а-яА-Я]/.test(text)) {
-    result.innerText = "Detected Language: Russian 🇷🇺";
-  } else if (/[éèàùçâêîôû]/.test(text)) {
-    result.innerText = "Detected Language: French 🇫🇷";
-  } else if (/[äöüß]/.test(text)) {
-    result.innerText = "Detected Language: German 🇩🇪";
-  } else {
-    result.innerText = "Detected Language: English 🇬🇧";
-  }
+    try {
+        // Call LibreTranslate API
+        const response = await fetch("https://libretranslate.de/detect", {
+            method: "POST",
+            body: JSON.stringify({ q: text }),
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+        const languageCode = data[0].language;
+
+        // Map codes to names + flags
+        const languageNames = {
+            en: "English 🇬🇧",
+            fr: "French 🇫🇷",
+            de: "German 🇩🇪",
+            hi: "Hindi 🇮🇳",
+            bn: "Bengali 🇧🇩",
+            es: "Spanish 🇪🇸",
+            it: "Italian 🇮🇹",
+            ta: "Tamil 🇮🇳",
+            te: "Telugu 🇮🇳"
+        };
+
+        const detectedLanguage = languageNames[languageCode] || languageCode;
+
+        document.getElementById("result").innerHTML =
+            `Detected Language: <b>${detectedLanguage}</b>`;
+    } catch (error) {
+        document.getElementById("result").innerHTML =
+            "Error detecting language. Please try again.";
+    }
 }
