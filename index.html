@@ -4,15 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Language Identifier</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ffb6c1, #ffc0cb);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      color: #fff;
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      background-color: #ff69b4;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff1493;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #333;
+      background: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Welcome to Mriganka Patra's Website 💖</h1>
-    <textarea id="inputText" placeholder="Type something..."></textarea>
-    <button onclick="detectLanguage()">Detect Language</button>
-    <p id="result"></p>
-  </div>
-  <script src="script.js"></script>
+  <h1>🌍 Language Identifier</h1>
+  <input type="text" id="textInput" placeholder="Type something...">
+  <button onclick="detectLanguage()">Detect Language</button>
+  <div id="result"></div>
+
+  <script>
+    function detectLanguage() {
+      let text = document.getElementById("textInput").value.trim();
+      let result = document.getElementById("result");
+
+      if (text === "") {
+        result.innerText = "⚠️ Please enter some text.";
+        return;
+      }
+
+      // Simple rules for detecting language
+      let lang = "Unknown";
+
+      // Hindi detection (common Devanagari letters)
+      if (/[अ-ह]/.test(text)) {
+        lang = "Hindi";
+      }
+      // Bengali detection
+      else if (/[অ-ঔক-হ]/.test(text)) {
+        lang = "Bengali";
+      }
+      // French (detect accented letters)
+      else if (/[éèàùçô]/i.test(text)) {
+        lang = "French";
+      }
+      // German (umlauts & ß)
+      else if (/[äöüß]/i.test(text)) {
+        lang = "German";
+      }
+      // English (default if only English letters)
+      else if (/^[a-zA-Z\s]+$/.test(text)) {
+        lang = "English";
+      }
+
+      result.innerText = "✅ Detected Language: " + lang;
+    }
+  </script>
 </body>
 </html>
