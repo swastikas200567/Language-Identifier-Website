@@ -1,45 +1,21 @@
-async function detectLanguage() {
-    const text = document.getElementById("inputText").value;
+function detectLanguage() {
+    const text = document.getElementById("inputText").value.toLowerCase();
+    let detected = "Unknown ❓";
 
-    if (!text) {
-        alert("Please enter some text!");
-        return;
+    // Simple rules
+    if (/[अ-ह]/.test(text)) {
+        detected = "Hindi 🇮🇳";
+    } else if (/[অ-ঔক-হ]/.test(text)) {
+        detected = "Bengali 🇧🇩";
+    } else if (text.includes("bonjour") || text.includes("merci")) {
+        detected = "French 🇫🇷";
+    } else if (text.includes("wie") || text.includes("heißt") || text.includes("danke")) {
+        detected = "German 🇩🇪";
+    } else if (/^[a-z\s?.,!]+$/.test(text)) {
+        detected = "English 🇬🇧";
     }
 
-    try {
-        // Use LibreTranslate free API
-        const response = await fetch("https://libretranslate.com/detect", {
-            method: "POST",
-            body: JSON.stringify({ q: text }),
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        });
-
-        const data = await response.json();
-        const languageCode = data[0].language;
-
-        // Map codes to names + flags
-        const languageNames = {
-            en: "English 🇬🇧",
-            fr: "French 🇫🇷",
-            de: "German 🇩🇪",
-            hi: "Hindi 🇮🇳",
-            bn: "Bengali 🇧🇩",
-            es: "Spanish 🇪🇸",
-            it: "Italian 🇮🇹",
-            ta: "Tamil 🇮🇳",
-            te: "Telugu 🇮🇳"
-        };
-
-        const detectedLanguage = languageNames[languageCode] || languageCode;
-
-        document.getElementById("result").innerHTML =
-            `Detected Language: <b>${detectedLanguage}</b>`;
-    } catch (error) {
-        document.getElementById("result").innerHTML =
-            "⚠️ Error detecting language. Try again later.";
-        console.error(error);
-    }
+    document.getElementById("result").innerHTML = 
+        `Detected Language: <b>${detected}</b>`;
 }
+
